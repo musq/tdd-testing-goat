@@ -52,8 +52,6 @@ class NewVisitorTest(LiveServerTestCase):
         # "1: Buy peacock feathers" as an item in a to-do list
         inputbox.send_keys(Keys.ENTER)
 
-        table = self.browser.find_element_by_id('id_list_table')
-        rows = table.find_elements_by_tag_name('tr')
         self.wait_for_row_in_list_table('1: Buy peacock feathers')
 
         # There is still a text box inviting her to add another item. She enters
@@ -63,8 +61,6 @@ class NewVisitorTest(LiveServerTestCase):
         inputbox.send_keys(Keys.ENTER)
 
         # The page updates again, and now shows both items on her list
-        table = self.browser.find_element_by_id('id_list_table')
-        rows = table.find_elements_by_tag_name('tr')
         self.wait_for_row_in_list_table('1: Buy peacock feathers')
         self.wait_for_row_in_list_table('2: Use peacock feathers to make a fly')
 
@@ -76,6 +72,7 @@ class NewVisitorTest(LiveServerTestCase):
         inputbox = self.browser.find_element_by_id('id_new_item')
         inputbox.send_keys('Buy peacock feathers')
         inputbox.send_keys(Keys.ENTER)
+        self.wait_for_row_in_list_table('1: Buy peacock feathers')
 
         # She notices that her list has a unique URL
         edith_list_url = self.browser.current_url
@@ -90,7 +87,7 @@ class NewVisitorTest(LiveServerTestCase):
 
         # Francis visits the home page. There is no sign of Edith's list
         self.browser.get(self.live_server_url)
-        page_text = self.browser.find_element_by_id('body').text
+        page_text = self.browser.find_element_by_tag_name('body').text
         self.assertNotIn('Buy peacock feathers', page_text)
         self.assertNotIn('make a fly', page_text)
 
