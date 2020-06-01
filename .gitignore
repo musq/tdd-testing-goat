@@ -1,6 +1,7 @@
 db.sqlite3
 geckodriver.log
 .venv/
+/static
 
 __pycache__
 *.pyc
