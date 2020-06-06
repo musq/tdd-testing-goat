@@ -1,6 +1,7 @@
 import random
 from fabric.contrib.files import append, exists
 from fabric.api import cd, env, local, run
+import os
 
 REPO_URL = "git@github.com:musq/tdd-testing-goat.git"
 
@@ -38,6 +39,11 @@ def _create_or_update_dotenv():
             'abcdefghijklmnopqrstuvwxyz0123456789', k=50
         ))
         append('.env', f"DJANGO_SECRET_KEY={new_secret}")
+
+    email_user = os.environ['EMAIL_USER']
+    email_password = os.environ['EMAIL_PASSWORD']
+    append('.env', f'EMAIL_USER={email_user}')
+    append('.env', f'EMAIL_PASSWORD={email_password}')
 
 def _update_static_files():
     run('./.venv/bin/python manage.py collectstatic --no-input')
