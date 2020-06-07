@@ -26,6 +26,29 @@ class ItemFormTest(TestCase):
         self.assertEqual(new_item.text, 'do me')
         self.assertEqual(new_item.list, list_)
 
+class NewListFormTest(unittest.TestCase):
+
+    @patch('lists.forms.List')
+    @patch('lists.forms.Item')
+    def test_save_created_new_list_and_item_from_post_data(
+        self.mockItem, mockList
+    ):
+        mock_item = mockItem.return_value
+        mock_list = mockList.return_value
+        user = Mock()
+        form = NewListForm(data={'text': 'new item text'})
+        form.is_valid()
+
+        def check_item_text_and_list():
+            self.assertEqual(mock_item.text, 'new item list')
+            self.assertEqual(mock_item.list, mock_list)
+            self.assertTrue(mock_list.save.called)
+
+        mock_item.save.side_effect = check_item_text_and_list
+
+        form.save(owner=user)
+        self.assertTrue(mock_item.save.called)
+
 class ExistingListItemFormTest(TestCase):
 
     def test_form_renders_item_text_input(self):

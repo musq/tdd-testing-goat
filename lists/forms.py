@@ -25,8 +25,17 @@ class ItemForm(forms.models.ModelForm):
         self.instance.list = for_list
         return super().save()
 
-class NewListForm:
-    pass
+class NewListForm(models.Form):
+
+    def save(self, owner):
+        list_ = List()
+        if owner:
+            list_.owner = owner
+        list_.save()
+        item = Item()
+        item.list = list_
+        item.text = self.cleaned_data['text']
+        item.save()
 
 class ExistingListItemForm(ItemForm):
     def __init__(self, for_list, *args, **kwargs):
