@@ -34,6 +34,18 @@ class NewListViewIntegratedTest(TestCase):
         new_item = Item.objects.first()
         self.assertEqual(new_item.text, 'A new list item')
 
+    def test_for_invalid_input_doesnt_save_but_shows_errors(self):
+        response = self.client.post('/lists/new', data={'text': ''})
+        self.assertEqual(List.objects.count(), 0)
+        self.assertContains(response, escape(EMPTY_ITEM_ERROR))
+
+    def test_list_owner_is_saved_if_user_is_authenticated(self):
+        user = User.objects.create(email='a@b.com')
+        self.client.force_login(user)
+        self.client.post('/lists/new', data={'text': 'new item'})
+        list_ = List.objects.first()
+        self.assertEquals(list_.owner, user)
+
     def test_redirects_after_POST(self):
         response = self.client.post("/lists/new", data={
             'text': 'A new list item'
